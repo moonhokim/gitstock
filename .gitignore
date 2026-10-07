@@ -1,0 +1,5 @@
+stock-signal-site/.cache/
+stock-signal-site/selftest-data.json
+stock-signal-site/build-report.json
+*.tmp
+.publish/

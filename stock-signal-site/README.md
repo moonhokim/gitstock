@@ -1,5 +1,9 @@
 # 매수 시그널 사이트 — 설치 가이드
 
+> **v4 업데이트(2026-10-07):** 실제 일봉 검증, 학습/시간순 검증 분리, 다음 거래일 시가 진입, 비용 가정, 수집 캐시와 실행 제한을 적용했습니다. [변경 사항](../docs/v4-changes.md)을 확인하세요. 이전 `range=max` 요청은 월봉·분기봉으로 응답되는 문제가 확인되어 제거했습니다. 이전 통계와 직접 비교하지 마세요.
+
+저장소 루트에서 실행: `node stock-signal-site/scripts/build.mjs`. 테스트: `node --test stock-signal-site/scripts/*.test.mjs`. 합성 테스트는 별도 `selftest-data.json`에 저장됩니다. 종목 목록은 이제 `scripts/universe.mjs`에서 관리합니다. 실제 사이트 파일은 `/stock-signal-site/index.html`에 있습니다.
+
 매일 아침 **7:30(한국시간)** GitHub 서버가 자동으로 주가를 수집·계산해 `data.json`을 만들고,
 사이트에 접속하면 **0초로 즉시** 오늘자 추세추종/계절성 매수 시그널을 보여줍니다.
 내 컴퓨터가 꺼져 있어도 GitHub가 대신 돌려주고, **비용은 0원**입니다.

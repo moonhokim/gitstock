@@ -6,19 +6,21 @@ on:
   workflow_dispatch:
   push:
     branches: [ main ]
-    paths-ignore:
-      - "stock-signal-site/data.json"
+    paths:
+      - "stock-signal-site/scripts/**"
+      - ".github/workflows/update.yml"
 
 permissions:
   contents: write
 
 concurrency:
   group: update-signals
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 12
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -26,8 +28,24 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+      - name: Restore history cache
+        uses: actions/cache@v4
+        with:
+          path: stock-signal-site/.cache
+          key: daily-v4-${{ github.run_id }}
+          restore-keys: daily-v4-
+      - name: Test recommendation logic
+        run: node --test stock-signal-site/scripts/*.test.mjs
       - name: Build data.json
+        timeout-minutes: 9
         run: node stock-signal-site/scripts/build.mjs
+      - name: Save collection report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collection-failure-report
+          path: stock-signal-site/build-report.json
+          if-no-files-found: ignore
       - name: Commit data.json
         run: |
           git config user.name "github-actions[bot]"
